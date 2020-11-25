@@ -13,6 +13,7 @@ import axios from "axios";
 import colors from "../assets/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RoomCard from "../components/RoomCard";
+import { TouchableOpacity } from "react-native";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -40,9 +41,11 @@ export default function HomeScreen() {
       <StatusBar style="dark" />
 
       {isLoading ? (
-        <ActivityIndicator size="small" color="#0000ff" />
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color={colors.red} />
+        </View>
       ) : (
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ paddingTop: 20 }}>
           <View style={styles.homeContainer}>
             <View style={styles.header}>
               <Image
@@ -56,7 +59,17 @@ export default function HomeScreen() {
               <FlatList
                 data={rooms}
                 renderItem={({ item }) => {
-                  return <RoomCard room={item} />;
+                  return (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate("Room", {
+                          id: item._id,
+                        });
+                      }}
+                    >
+                      <RoomCard room={item} />
+                    </TouchableOpacity>
+                  );
                 }}
                 keyExtractor={(item) => item._id}
               />
@@ -69,6 +82,18 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  SafeAreaView: {
+    paddingBottom: 0,
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+
+  loader: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   color: {
     color: colors.grey,
   },
@@ -78,7 +103,7 @@ const styles = StyleSheet.create({
   },
 
   homeContainer: {
-    marginHorizontal: 20,
+    marginHorizontal: 15,
   },
 
   header: {

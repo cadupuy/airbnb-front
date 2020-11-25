@@ -28,7 +28,7 @@ export default function SignInScreen({ setToken }) {
       if (password === confirmPassword) {
         try {
           const response = await axios.post(
-            "http://localhost:3005/user/signup",
+            "https://express-airbnb-api.herokuapp.com/user/sign_up",
             {
               email,
               password,
@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
 
   safeAreaView: {
     flex: 1,
+    backgroundColor: colors.white,
   },
   container: {
     marginTop: 10,

@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./containers/HomeScreen";
+import RoomScreen from "./containers/RoomScreen";
 import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
@@ -47,16 +48,10 @@ export default function App() {
       {isLoading ? null : userToken === null ? ( // We haven't finished checking for the token yet
         // No token found, user isn't signed in
         <Stack.Navigator>
-          <Stack.Screen
-            name="SignIn"
-            options={{ header: () => null, animationEnabled: false }}
-          >
+          <Stack.Screen name="SignIn" options={{ headerShown: false }}>
             {() => <SignInScreen setToken={setToken} />}
           </Stack.Screen>
-          <Stack.Screen
-            name="SignUp"
-            options={{ header: () => null, animationEnabled: false }}
-          >
+          <Stack.Screen name="SignUp" options={{ headerShown: false }}>
             {() => <SignUpScreen setToken={setToken} />}
           </Stack.Screen>
         </Stack.Navigator>
@@ -88,11 +83,19 @@ export default function App() {
                       <Stack.Screen
                         name="Home"
                         options={{
-                          header: () => null,
-                          animationEnabled: false,
+                          headerShown: false,
                         }}
                       >
                         {() => <HomeScreen />}
+                      </Stack.Screen>
+
+                      <Stack.Screen
+                        name="Room"
+                        options={{
+                          headerShown: false,
+                        }}
+                      >
+                        {() => <RoomScreen />}
                       </Stack.Screen>
 
                       <Stack.Screen

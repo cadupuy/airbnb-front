@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
-import { Dimensions } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   Text,
@@ -16,8 +15,6 @@ import axios from "axios";
 import colors from "../assets/colors";
 
 export default function SignInScreen({ setToken }) {
-  const width = Dimensions.get("window").width;
-  const height = Dimensions.get("window").height;
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +24,7 @@ export default function SignInScreen({ setToken }) {
     if (email && password) {
       try {
         const response = await axios.post(
-          "http://localhost:3005/user/login",
+          "https://express-airbnb-api.herokuapp.com/user/log_in",
           {
             email,
             password,
@@ -52,8 +49,8 @@ export default function SignInScreen({ setToken }) {
   };
 
   return (
-    <KeyboardAwareScrollView>
-      <SafeAreaView style={styles.SafeAreaView}>
+    <SafeAreaView style={styles.SafeAreaView}>
+      <KeyboardAwareScrollView>
         <StatusBar style="dark" />
         <View style={styles.signInContainer}>
           <View style={styles.pageTitle}>
@@ -98,8 +95,8 @@ export default function SignInScreen({ setToken }) {
             </TouchableOpacity>
           </View>
         </View>
-      </SafeAreaView>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -118,6 +115,7 @@ const styles = StyleSheet.create({
 
   safeAreaView: {
     flex: 1,
+    backgroundColor: colors.white,
   },
   signInContainer: {
     marginTop: 70,

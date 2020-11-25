@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   reviews: {
     marginLeft: 5,
-    color: colors.ligthgreyText,
+    color: colors.grey,
   },
 });
 
