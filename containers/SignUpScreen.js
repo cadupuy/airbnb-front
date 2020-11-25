@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
-import { Dimensions } from "react-native";
-
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   Text,
   TextInput,
@@ -11,7 +10,9 @@ import {
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 import axios from "axios";
+import colors from "../assets/colors";
 
 export default function SignInScreen({ setToken }) {
   const navigation = useNavigation();
@@ -23,104 +24,134 @@ export default function SignInScreen({ setToken }) {
   const [error, setError] = useState("");
 
   const handleSubmit = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3005/user/signup",
-        {
-          email,
-          password,
-          username,
-          description,
-          confirmPassword,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+    if (email && username && description && password && confirmPassword) {
+      if (password === confirmPassword) {
+        try {
+          const response = await axios.post(
+            "http://localhost:3005/user/signup",
+            {
+              email,
+              password,
+              username,
+              description,
+              confirmPassword,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const userToken = response.data.token;
+          setToken(userToken);
+        } catch (error) {
+          if (error.response) {
+            setError(error.response.data.message);
+          }
         }
-      );
-      const userToken = "secret-token";
-      setToken(userToken);
-      alert("vous êtes connecté");
-    } catch (error) {
-      setError(error.response.data.message);
-      console.log(error.response.data.message);
+      } else {
+        setError("Les mots de passe doivent être identiques");
+      }
+    } else {
+      setError("Paramètre(s) manquant(s)");
     }
   };
 
   return (
-    <SafeAreaView style={styles.SafeAreaView}>
-      <View style={styles.container}>
-        <View style={styles.pageTitle}>
-          <Image
-            source={require("../assets/logo.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          ></Image>
-          <Text style={styles.title}>Sign in</Text>
+    <KeyboardAwareScrollView>
+      <SafeAreaView style={styles.SafeAreaView}>
+        <StatusBar style="dark" />
+        <View style={styles.container}>
+          <View style={styles.pageTitle}>
+            <Image
+              source={require("../assets/logo.png")}
+              style={styles.logo}
+              resizeMode="contain"
+            ></Image>
+            <Text style={styles.title}>Sign in</Text>
+          </View>
+          <View style={styles.form}>
+            <TextInput
+              style={error !== "" ? styles.inputError : styles.input}
+              placeholder="email"
+              onChangeText={(text) => {
+                setEmail(text);
+              }}
+            />
+            <TextInput
+              style={error !== "" ? styles.inputError : styles.input}
+              placeholder="username"
+              onChangeText={(text) => {
+                setUsername(text);
+              }}
+            />
+            <TextInput
+              style={
+                error !== "" ? styles.descriptionError : styles.description
+              }
+              placeholder="Describe yourself in a few words..."
+              multiline={true}
+              numberOfLines={10}
+              maxLength={200}
+              onChangeText={(text) => {
+                setDescription(text);
+              }}
+            />
+
+            <TextInput
+              style={error !== "" ? styles.inputError : styles.input}
+              placeholder="password"
+              secureTextEntry={true}
+              onChangeText={(text) => {
+                setPassword(text);
+              }}
+            />
+            <TextInput
+              style={error !== "" ? styles.inputError : styles.input}
+              placeholder="confirm password"
+              secureTextEntry={true}
+              onChangeText={(text) => {
+                setConfirmPassword(text);
+              }}
+            />
+          </View>
+
+          <View style={styles.login}>
+            <Text style={styles.error}>{error}</Text>
+
+            <TouchableOpacity onPress={handleSubmit}>
+              <Text style={[styles.loginButton]}>Sign up</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("SignIn");
+              }}
+            >
+              <Text style={styles.color}>
+                Already have an account ? Sign in
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.form}>
-          <TextInput
-            style={error !== "" ? styles.inputError : styles.input}
-            placeholder="email"
-            onChangeText={(text) => {
-              setEmail(text);
-            }}
-          />
-          <TextInput
-            style={error !== "" ? styles.inputError : styles.input}
-            placeholder="username"
-            onChangeText={(text) => {
-              setUsername(text);
-            }}
-          />
-          <TextInput
-            style={error !== "" ? styles.descriptionError : styles.description}
-            placeholder="Describe yourself in a few words..."
-            onChangeText={(text) => {
-              setDescription(text);
-            }}
-          />
-
-          <TextInput
-            style={error !== "" ? styles.inputError : styles.input}
-            placeholder="password"
-            secureTextEntry={true}
-            onChangeText={(text) => {
-              setPassword(text);
-            }}
-          />
-          <TextInput
-            style={error !== "" ? styles.inputError : styles.input}
-            placeholder="confirm password"
-            secureTextEntry={true}
-            onChangeText={(text) => {
-              setConfirmPassword(text);
-            }}
-          />
-        </View>
-
-        <View style={styles.login}>
-          <Text>{error}</Text>
-
-          <TouchableOpacity onPress={handleSubmit}>
-            <Text style={[styles.loginButton]}>Sign up</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("SignIn");
-            }}
-          >
-            <Text style={styles.color}>Already have an account ? Sign in</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  color: {
+    color: colors.grey,
+  },
+
+  dark: {
+    color: colors.black,
+  },
+
+  error: {
+    color: colors.red,
+  },
+
   safeAreaView: {
     flex: 1,
   },
@@ -142,6 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     marginTop: 25,
+    color: colors.grey,
   },
 
   form: {
@@ -152,48 +184,53 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: 5,
     marginTop: 30,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
+    borderColor: colors.borderColor,
   },
 
   description: {
     width: "100%",
-    paddingBottom: 5,
+    height: 90,
+    paddingTop: 5,
     marginTop: 30,
-    borderWidth: 1,
-    height: 100,
+    borderWidth: 2,
     paddingLeft: 10,
+    paddingBottom: 10,
+    paddingRight: 10,
+    borderColor: colors.borderColor,
   },
 
   descriptionError: {
     width: "100%",
     paddingBottom: 5,
     marginTop: 30,
-    borderWidth: 1,
+    borderWidth: 2,
     height: 100,
     paddingLeft: 10,
-    borderColor: "red",
+    borderColor: colors.red,
   },
 
   inputError: {
     width: "100%",
     paddingBottom: 5,
     marginTop: 30,
-    borderBottomWidth: 1,
-    borderColor: "red",
+    borderBottomWidth: 2,
+    borderColor: colors.red,
   },
 
   login: {
     marginTop: 50,
     alignItems: "center",
+    paddingBottom: 30,
   },
 
   loginButton: {
-    color: "red",
+    color: colors.grey,
     paddingTop: 15,
     paddingBottom: 15,
     paddingLeft: 80,
     paddingRight: 80,
-    borderColor: "red",
+    borderColor: colors.red,
     borderWidth: 3,
     borderRadius: 30,
     fontSize: 18,

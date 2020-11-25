@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { Dimensions } from "react-native";
-
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   Text,
   TextInput,
@@ -10,8 +10,10 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
+import colors from "../assets/colors";
 
 export default function SignInScreen({ setToken }) {
   const width = Dimensions.get("window").width;
@@ -22,83 +24,102 @@ export default function SignInScreen({ setToken }) {
   const [error, setError] = useState("");
 
   const handleSubmit = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3005/user/login",
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+    if (email && password) {
+      try {
+        const response = await axios.post(
+          "http://localhost:3005/user/login",
+          {
+            email,
+            password,
           },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(response.data.token);
+        const userToken = response.data.token;
+        setToken(userToken);
+      } catch (error) {
+        if (error.response) {
+          setError(error.response.data.message);
         }
-      );
-      console.log(response.data);
-      const userToken = "secret-token";
-      setToken(userToken);
-      alert("vous êtes connecté");
-    } catch (error) {
-      setError(error.response.data.message);
-      console.log(error.response.data.message);
+      }
+    } else {
+      setError("Paramètre(s) manquant(s)");
     }
   };
 
   return (
-    <SafeAreaView style={styles.SafeAreaView}>
-      <View style={styles.container}>
-        <View style={styles.pageTitle}>
-          <Image
-            source={require("../assets/logo.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          ></Image>
-          <Text style={styles.title}>Sign in</Text>
-        </View>
-        <View style={styles.form}>
-          <TextInput
-            style={error !== "" ? styles.inputError : styles.input}
-            placeholder="email"
-            onChangeText={(text) => {
-              setEmail(text);
-            }}
-          />
-          <TextInput
-            style={error !== "" ? styles.inputError : styles.input}
-            placeholder="password"
-            secureTextEntry={true}
-            onChangeText={(text) => {
-              setPassword(text);
-            }}
-          />
-        </View>
+    <KeyboardAwareScrollView>
+      <SafeAreaView style={styles.SafeAreaView}>
+        <StatusBar style="dark" />
+        <View style={styles.signInContainer}>
+          <View style={styles.pageTitle}>
+            <Image
+              source={require("../assets/logo.png")}
+              style={styles.logo}
+              resizeMode="contain"
+            ></Image>
+            <Text style={styles.title}>Sign in</Text>
+          </View>
+          <View style={styles.form}>
+            <TextInput
+              style={error !== "" ? styles.inputError : styles.input}
+              placeholder="email"
+              onChangeText={(text) => {
+                setEmail(text);
+              }}
+            />
+            <TextInput
+              style={error !== "" ? styles.inputError : styles.input}
+              placeholder="password"
+              secureTextEntry={true}
+              onChangeText={(text) => {
+                setPassword(text);
+              }}
+            />
+          </View>
 
-        <View style={styles.login}>
-          <Text>{error}</Text>
+          <View style={styles.login}>
+            <Text style={styles.error}>{error}</Text>
 
-          <TouchableOpacity onPress={handleSubmit}>
-            <Text style={[styles.loginButton]}>Sign in</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={handleSubmit}>
+              <Text style={[styles.loginButton]}>Sign in</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("SignUp");
-            }}
-          >
-            <Text style={styles.color}>No account ? Register</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("SignUp");
+              }}
+            >
+              <Text style={styles.color}>No account ? Register</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  color: {
+    color: colors.grey,
+  },
+
+  dark: {
+    color: colors.black,
+  },
+
+  error: {
+    color: colors.red,
+  },
+
   safeAreaView: {
     flex: 1,
   },
-  container: {
+  signInContainer: {
     marginTop: 70,
   },
 
@@ -116,6 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     marginTop: 25,
+    color: colors.grey,
   },
 
   form: {
@@ -126,15 +148,16 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: 5,
     marginTop: 30,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
+    borderColor: colors.borderColor,
   },
 
   inputError: {
     width: "100%",
     paddingBottom: 5,
     marginTop: 30,
-    borderBottomWidth: 1,
-    borderColor: "red",
+    borderBottomWidth: 2,
+    borderColor: colors.red,
   },
 
   login: {
@@ -143,12 +166,12 @@ const styles = StyleSheet.create({
   },
 
   loginButton: {
-    color: "red",
+    color: colors.grey,
     paddingTop: 15,
     paddingBottom: 15,
     paddingLeft: 80,
     paddingRight: 80,
-    borderColor: "red",
+    borderColor: colors.red,
     borderWidth: 3,
     borderRadius: 30,
     fontSize: 18,

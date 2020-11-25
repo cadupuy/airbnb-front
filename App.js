@@ -53,7 +53,10 @@ export default function App() {
           >
             {() => <SignInScreen setToken={setToken} />}
           </Stack.Screen>
-          <Stack.Screen name="SignUp">
+          <Stack.Screen
+            name="SignUp"
+            options={{ header: () => null, animationEnabled: false }}
+          >
             {() => <SignUpScreen setToken={setToken} />}
           </Stack.Screen>
         </Stack.Navigator>
@@ -85,9 +88,8 @@ export default function App() {
                       <Stack.Screen
                         name="Home"
                         options={{
-                          title: "My App",
-                          headerStyle: { backgroundColor: "red" },
-                          headerTitleStyle: { color: "white" },
+                          header: () => null,
+                          animationEnabled: false,
                         }}
                       >
                         {() => <HomeScreen />}
