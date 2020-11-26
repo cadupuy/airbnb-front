@@ -66,28 +66,8 @@ export default function RoomScreen() {
           <ActivityIndicator size="large" color={colors.red} />
         </View>
       ) : (
-        <ScrollView contentContainerStyle={{ paddingTop: 20 }}>
+        <ScrollView contentContainerStyle={{ paddingTop: 0 }}>
           <View style={styles.homeContainer}>
-            <View style={styles.header}>
-              <Image
-                source={require("../assets/logo.png")}
-                style={styles.logo}
-                resizeMode="contain"
-              ></Image>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("Home");
-                }}
-                style={styles.arrow}
-              >
-                <AntDesign
-                  style={styles.arrow}
-                  name="arrowleft"
-                  size={24}
-                  color={colors.grey}
-                />
-              </TouchableOpacity>
-            </View>
             <View style={styles.roomCard}>
               <View style={styles.container}>
                 <SwiperFlatList
@@ -257,6 +237,7 @@ const styles = StyleSheet.create({
 
   SafeAreaView: {
     paddingBottom: 0,
+    paddingTop: 0,
     flex: 1,
     backgroundColor: colors.white,
   },
@@ -273,25 +254,6 @@ const styles = StyleSheet.create({
 
   dark: {
     color: colors.black,
-  },
-
-  header: {
-    paddingBottom: 10,
-    alignItems: "center",
-    position: "relative",
-  },
-
-  arrow: {
-    position: "absolute",
-    paddingLeft: 5,
-    paddingRight: 5,
-    left: 0,
-    top: "25%",
-  },
-
-  logo: {
-    width: 40,
-    height: 40,
   },
 
   color: {
@@ -358,7 +320,7 @@ const styles = StyleSheet.create({
 
   description: {
     marginHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 20,
   },
 
   showButton: {

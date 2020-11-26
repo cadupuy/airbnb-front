@@ -39,43 +39,31 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <StatusBar style="dark" />
-
       {isLoading ? (
         <View style={styles.loader}>
           <ActivityIndicator size="large" color={colors.red} />
         </View>
       ) : (
-        <ScrollView contentContainerStyle={{ paddingTop: 20 }}>
-          <View style={styles.homeContainer}>
-            <View style={styles.header}>
-              <Image
-                source={require("../assets/logo.png")}
-                style={styles.logo}
-                resizeMode="contain"
-              ></Image>
-            </View>
-
-            <View style={styles.roomCards}>
-              <FlatList
-                data={rooms}
-                renderItem={({ item }) => {
-                  return (
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate("Room", {
-                          id: item._id,
-                        });
-                      }}
-                    >
-                      <RoomCard room={item} />
-                    </TouchableOpacity>
-                  );
-                }}
-                keyExtractor={(item) => item._id}
-              />
-            </View>
-          </View>
-        </ScrollView>
+        <View style={styles.roomCards}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={rooms}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Room", {
+                      id: item._id,
+                    });
+                  }}
+                >
+                  <RoomCard room={item} />
+                </TouchableOpacity>
+              );
+            }}
+            keyExtractor={(item) => item._id}
+          />
+        </View>
       )}
     </SafeAreaView>
   );
@@ -83,9 +71,10 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   SafeAreaView: {
-    paddingBottom: 0,
     flex: 1,
     backgroundColor: colors.white,
+    paddingTop: 15,
+    paddingBottom: 0,
   },
 
   loader: {
@@ -104,6 +93,7 @@ const styles = StyleSheet.create({
 
   homeContainer: {
     marginHorizontal: 15,
+    paddingTop: 20,
   },
 
   header: {
@@ -117,5 +107,9 @@ const styles = StyleSheet.create({
   logo: {
     width: 40,
     height: 40,
+  },
+
+  roomCards: {
+    marginHorizontal: 20,
   },
 });
