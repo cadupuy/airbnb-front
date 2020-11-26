@@ -140,12 +140,14 @@ const styles = StyleSheet.create({
     width: 75,
     height: 75,
     borderRadius: 50,
+    marginLeft: 10,
   },
 
   roomDetails: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingTop: 10,
+    alignItems: "center",
   },
 
   rating: {

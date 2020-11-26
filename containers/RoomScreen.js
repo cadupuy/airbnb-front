@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Entypo } from "@expo/vector-icons";
 import SwiperFlatList from "react-native-swiper-flatlist";
-
+import MapView from "react-native-maps";
 import {
   Image,
   StyleSheet,
   View,
-  FlatList,
   TouchableOpacity,
   Text,
   Dimensions,
@@ -26,10 +25,11 @@ export default function RoomScreen() {
   const navigation = useNavigation();
 
   const id = params.id;
-
   const [room, setRoom] = useState([]);
   const [isLoading, setisLoading] = useState(true);
   const [isClicked, setisClicked] = useState(false);
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
 
   const handlePress = () => {
     if (isClicked) {
@@ -46,6 +46,9 @@ export default function RoomScreen() {
           `https://express-airbnb-api.herokuapp.com/rooms/${id}`
         );
         setRoom(response.data);
+        setLongitude(response.data.location[0]);
+        setLatitude(response.data.location[1]);
+
         setisLoading(false);
       } catch (error) {
         console.log(error.message);
@@ -209,6 +212,25 @@ export default function RoomScreen() {
                 </>
               )}
             </View>
+            <View>
+              <MapView
+                style={styles.map}
+                initialRegion={{
+                  latitude: 48.856614,
+                  longitude: 2.3522219,
+                  latitudeDelta: 0.1,
+                  longitudeDelta: 0.1,
+                }}
+                showsUserLocation={false}
+              >
+                <MapView.Marker
+                  coordinate={{
+                    latitude: latitude,
+                    longitude: longitude,
+                  }}
+                />
+              </MapView>
+            </View>
           </View>
         </ScrollView>
       )}
@@ -309,6 +331,7 @@ const styles = StyleSheet.create({
     width: 75,
     height: 75,
     borderRadius: 50,
+    marginLeft: 10,
   },
 
   roomDetails: {
@@ -316,6 +339,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingTop: 15,
     marginHorizontal: 20,
+    alignItems: "center",
   },
 
   rating: {
@@ -346,5 +370,11 @@ const styles = StyleSheet.create({
   show: {
     color: colors.grey,
     paddingRight: 5,
+  },
+
+  map: {
+    height: 300,
+    width: width,
+    marginTop: 20,
   },
 });
