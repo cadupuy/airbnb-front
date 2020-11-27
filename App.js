@@ -22,15 +22,24 @@ const Stack = createStackNavigator();
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const setToken = async (token) => {
     if (token) {
       AsyncStorage.setItem("userToken", token);
     } else {
       AsyncStorage.removeItem("userToken");
+      AsyncStorage.removeItem("userId");
     }
-
+    setUserId("");
     setUserToken(token);
+  };
+
+  const setId = async (id) => {
+    if (id) {
+      console.log(id);
+      AsyncStorage.setItem("userId", id);
+    }
   };
 
   useEffect(() => {
@@ -54,10 +63,10 @@ export default function App() {
         // No token found, user isn't signed in
         <Stack.Navigator>
           <Stack.Screen name="SignIn" options={{ headerShown: false }}>
-            {() => <SignInScreen setToken={setToken} />}
+            {() => <SignInScreen setToken={setToken} setId={setId} />}
           </Stack.Screen>
           <Stack.Screen name="SignUp" options={{ headerShown: false }}>
-            {() => <SignUpScreen setToken={setToken} />}
+            {() => <SignUpScreen setToken={setToken} setId={setId} />}
           </Stack.Screen>
         </Stack.Navigator>
       ) : (
@@ -169,9 +178,16 @@ export default function App() {
               <Stack.Navigator>
                 <Stack.Screen
                   name="Settings"
-                  options={{ title: "Settings", tabBarLabel: "Settings" }}
+                  options={{
+                    headerStatusBarHeight: 60,
+                    title: "Settings",
+                    headerTitleAlign: "center",
+
+                    tabBarLabel: "Settings",
+                    headerTitle: () => <Logo />,
+                  }}
                 >
-                  {() => <SettingsScreen setToken={setToken} />}
+                  {() => <SettingsScreen setToken={setToken} userId={userId} />}
                 </Stack.Screen>
               </Stack.Navigator>
             )}

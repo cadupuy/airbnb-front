@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import colors from "../assets/colors";
 
-export default function SignInScreen({ setToken }) {
+export default function SignInScreen({ setToken, setId }) {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,9 +35,10 @@ export default function SignInScreen({ setToken }) {
             },
           }
         );
-        console.log(response.data.token);
         const userToken = response.data.token;
+        const userId = response.data.id;
         setToken(userToken);
+        setId(userId);
       } catch (error) {
         if (error.response) {
           setError(error.response.data.message);
