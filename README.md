@@ -5,7 +5,7 @@
 
 Airbnb clone made with React-Native, NodeJS and Express. All rights reserved to Airbnb.
 
-[![](https://image.noelshack.com/fichiers/2020/48/3/1606341311-simulator-screen-shot-iphone-12-pro-max-2020-11-25-at-22-49-55.jpg)]()
+[![](https://image.noelshack.com/fichiers/2020/48/5/1606469488-qqqqqq.png)]()
 
 ---
 
